@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h1>Welcome to Apple Software</h1>
+
+    <p>We seek to help scan your apple</p>
+
+    <img src="{{ url_for('video_feed') }}" height="80%">
+</div>
+
+{% endblock %}
