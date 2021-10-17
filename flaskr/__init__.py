@@ -79,11 +79,10 @@ def rotten():
     thread.start()
     import random
     #--------- get location of the index -------
-    result = trying.stdout.read().decode()
-    rotten = random.randint(0,10)
+    overipe = random.randint(0,10)
     ripe = random.randint(0,10)
-    overripe = 100 - ripe - rotten
-    return render_template('scan.html', ripe=ripe, rotten=rotten, overripe=overripe)
+    rotten = 100 - ripe - overipe
+    return render_template('main.html', ripe=ripe, rotten=rotten, overipe=overipe)
 
 @app.route('/overripe')
 def overripe():
@@ -95,11 +94,10 @@ def overripe():
     thread.start()
     import random
     #--------- get location of the index -------
-    result = trying.stdout.read().decode()
     rotten = random.randint(0,10)
     ripe = random.randint(0,10)
-    overripe = 100 - ripe - rotten
-    return render_template('scan.html', ripe=ripe, rotten=rotten, overripe=overripe)
+    overipe = 100 - ripe - rotten
+    return render_template('main.html', ripe=ripe, rotten=rotten, overipe=overipe)
 
 global rec, rec_frame, capture
 rec =1
