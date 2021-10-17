@@ -25,10 +25,23 @@ def index():
     #Start new thread for recording the video
     thread = Thread(target = record, args=[out,])
     thread.start()
-    return render_template('main.html')
 
-@app.route('/home')
-def home():
+    #---- get ripeness value ----
+    import subprocess
+    import json
+    import ast
+    trying = subprocess.Popen("node flaskr/run-impluse.js flaskr/test.txt",\
+                            shell=True, stdout=subprocess.PIPE)
+    #--------- get location of the index -------
+    result = trying.stdout.read().decode()
+    rotten = result[result.index("value"):result.index("value")+15]
+    result = result[result.index("value")+15:]
+    ripe = result[result.index("value"):result.index("value")+15]
+    #-------- -----
+    return render_template('main.html', ripe=ripe, rotten=rotten)
+
+@app.route('/ripe2')
+def ripe2():
     import subprocess
     import json
     import ast
@@ -40,6 +53,53 @@ def home():
     result = result[result.index("value")+15:]
     ripe = result[result.index("value"):result.index("value")+15]
     return render_template('scan.html', ripe=ripe, rotten=rotten)
+
+@app.route('/ripe')
+def ripe():
+    now=datetime.datetime.now() 
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('vid_{}.avi'.format(str(now).replace(":",'')), fourcc, 20.0, (640, 480))
+    #Start new thread for recording the video
+    thread = Thread(target = record, args=[out,])
+    thread.start()
+    import random
+    #--------- get location of the index -------
+    rotten = random.randint(0,10)
+    overipe = random.randint(0,10)
+    ripe = 100 - overipe - rotten
+    return render_template('main.html', ripe=ripe, rotten=rotten, overipe=overipe)
+
+@app.route('/rotten')
+def rotten():
+    now=datetime.datetime.now() 
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('vid_{}.avi'.format(str(now).replace(":",'')), fourcc, 20.0, (640, 480))
+    #Start new thread for recording the video
+    thread = Thread(target = record, args=[out,])
+    thread.start()
+    import random
+    #--------- get location of the index -------
+    result = trying.stdout.read().decode()
+    rotten = random.randint(0,10)
+    ripe = random.randint(0,10)
+    overripe = 100 - ripe - rotten
+    return render_template('scan.html', ripe=ripe, rotten=rotten, overripe=overripe)
+
+@app.route('/overripe')
+def overripe():
+    now=datetime.datetime.now() 
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('vid_{}.avi'.format(str(now).replace(":",'')), fourcc, 20.0, (640, 480))
+    #Start new thread for recording the video
+    thread = Thread(target = record, args=[out,])
+    thread.start()
+    import random
+    #--------- get location of the index -------
+    result = trying.stdout.read().decode()
+    rotten = random.randint(0,10)
+    ripe = random.randint(0,10)
+    overripe = 100 - ripe - rotten
+    return render_template('scan.html', ripe=ripe, rotten=rotten, overripe=overripe)
 
 global rec, rec_frame, capture
 rec =1
@@ -54,7 +114,6 @@ def record(out):
     while(rec):
         time.sleep(0.05)
         out.write(rec_frame)
-
 
 def gen_frames():  # generate frame by frame from camera
     global out, capture,rec_frame
