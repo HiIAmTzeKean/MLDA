@@ -1,12 +1,141 @@
 {% extends 'base.html' %}
 
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+{% endblock %}
+
 {% block content %}
 <div>
-    <h1>Welcome to Apple Software</h1>
+    <h1>Apple Software</h1>
+    <p>Current Modal: CNN classifier</p>
+    <p>Are you the apples of my eye</p>
+    <hr>
 
-    <p>We seek to help scan your apple</p>
+    <div class="row">
+        <div class="d-inline-flex p-2">
+            <img src="{{ url_for('video_feed') }}" width="95%">
+        </div>
+    </div>
 
-    <img src="{{ url_for('video_feed') }}" height="80%">
+    <div class="text-center">
+        <!-- Button HTML (to Trigger Modal) -->
+        <a href="#myModal" class="btn btn-info btn-block" data-toggle="modal">Scan!</a>
+    </div>
+
+    <hr>
+
+    <div>
+        <p>Current Stats</p>
+        <div id="chart"></div>
+    </div>
+    <!-- Modal HTML -->
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title w-100">Apple Scan Result</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 class="modal-title w-100">Prediction: Apple is ripe</h4>
+                    <br>
+                    <p style="text-center">The score for ripe is: {{ ripe }}</p>
+                    <p style="text-center">The score for overipe is: {{ overipe }}</p>
+                    <p style="text-center">The score for rotten is: {{ rotten }}</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="d-flex p-2">
+                        <button class="btn btn-success btn-block" data-dismiss="modal">Confirm</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script>
+    var options = {
+        series: [{
+            name: 'Category',
+            data: [90, 8, 2]
+        }],
+        chart: {
+            height: 350,
+            type: 'bar',
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 10,
+                dataLabels: {
+                    position: 'top', // top, center, bottom
+                },
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+                return val + "%";
+            },
+            offsetY: -20,
+            style: {
+                fontSize: '12px',
+                colors: ["#304758"]
+            }
+        },
+
+        xaxis: {
+            categories: ["Ripe", "Overipe", "Rotten"],
+            position: 'top',
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            crosshairs: {
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        colorFrom: '#D8E3F0',
+                        colorTo: '#BED1E6',
+                        stops: [0, 100],
+                        opacityFrom: 0.4,
+                        opacityTo: 0.5,
+                    }
+                }
+            },
+            tooltip: {
+                enabled: true,
+            }
+        },
+        yaxis: {
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false,
+            },
+            labels: {
+                show: false,
+                formatter: function (val) {
+                    return val + "%";
+                }
+            }
+
+        },
+        title: {
+            text: 'Scanned Apples Statistics',
+            floating: true,
+            offsetY: 330,
+            align: 'center',
+            style: {
+                color: '#444'
+            }
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+</script>
 {% endblock %}
